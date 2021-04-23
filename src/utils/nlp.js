@@ -1,5 +1,5 @@
 var request = require('request');
-
+var b=[]
 const diagonose=(obj,callback)=>{
 var options = {
   'method': 'POST',
@@ -22,13 +22,19 @@ request(options, function (error, response) {
 
   else{
     var u=JSON.parse(response.body)
-    var b=[]
+   
+    if(obj.symid.length!=0){
+     b.push({
+       id:obj.symid,
+       choice_id:obj.symcid
+     })
+    }
     var t=u.mentions.length
     for(i=0;i<t;i++){
-      b[i]={
+      b.push({
       id:u.mentions[i].id,
       choice_id:u.mentions[i].choice_id,
-      }
+      })
     
       if(i==0){
         b[i].source="initial"
@@ -43,7 +49,7 @@ request(options, function (error, response) {
        },
        "evidence":b
      }
-     console.log(magic)
+     
      var optionss = {
       'method': 'POST',
       'url': 'https://api.infermedica.com/v3/diagnosis',
@@ -59,8 +65,37 @@ request(options, function (error, response) {
       if (error)
       console.log(error);
       else{
-      console.log(JSON.parse(response.body).question.items);
-      callback(undefined,JSON.parse(response.body))
+      var u=JSON.parse(response.body).question.items;
+      var choices=[];
+      for(i=0;i<u.length;i++){
+        choices.push({
+          id:u[i].id,
+          name:u[i].name,
+          subchoice:[{
+             id:u[i].choices[0].id,
+             label:u[i].choices[0].label,
+          },
+          {
+            id:u[i].choices[1].id,
+            label:u[i].choices[1].label,
+         },
+         {
+          id:u[i].choices[2].id,
+          label:u[i].choices[2].label,
+       }
+          ]
+
+
+        })
+      }
+      var flag =false
+      console.log(JSON.parse(response.body))
+      console.log("flag",JSON.parse(response.body).should_stop)
+     if(JSON.parse(response.body).should_stop==true){
+       flag=true
+     }
+      callback(undefined,{body:JSON.parse(response.body),items:u.length,choices:choices,flag:flag})
+     
       }
     });
 }

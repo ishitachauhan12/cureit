@@ -12,9 +12,11 @@ app.get("/dia", (req, res) => {
       value:Number(req.query.age),
     },
   text:String(req.query.text),
-  
+  symid:req.query.symid,
+  symcid:req.query.symcid,
   }
-  console.log(obj)
+  
+  //console.log(req.query.symptom.length)
     diagonose(obj,(error, response) => {
        if (error) {
         return res.send("error: invalid input");
@@ -22,7 +24,7 @@ app.get("/dia", (req, res) => {
   
       else {
         res.send({
-          response
+          response,
         });
       }
     });
