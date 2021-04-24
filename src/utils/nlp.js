@@ -89,13 +89,14 @@ request(options, function (error, response) {
         })
       }
       var flag =false
-      console.log(JSON.parse(response.body))
-      console.log("flag",JSON.parse(response.body).should_stop)
+      console.log(b)
+      //console.log(JSON.parse(response.body))
+      //console.log("flag",JSON.parse(response.body).should_stop)
      if(JSON.parse(response.body).should_stop==true){
        flag=true
      }
       callback(undefined,{body:JSON.parse(response.body),items:u.length,choices:choices,flag:flag})
-     
+     //console.log({body:JSON.parse(response.body),items:u.length,choices:choices,flag:flag})
       }
     });
 }
